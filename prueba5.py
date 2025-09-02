@@ -12,10 +12,11 @@ import plotly.express as px
 # Para gráficos
 import matplotlib.pyplot as plt  
 from mpl_toolkits.mplot3d import Axes3D  # para gráficos 3D
+import plotly.graph_objects as go
 
 # carpeta donde estan las fots
 
-ruta_imagenes="/Users/user/Desktop/sistemitas/python/labo/mondea3d/"
+ruta_imagenes = "/Users/agmendez/Downloads/fotosmoneda/"
 #print(os.listdir(ruta_imagenes))
 
 #busco todos los png en la carpta y los ordeno
@@ -65,13 +66,17 @@ print("Dimensiones del volumen:", volumen.shape)
 #creo como una grilla de coordenadas de los puntos en 3d
 #me genera los indices de mi array, osea yo tengo mi array y con esto nombro mis voxeles con indices. 
 #me devuelve las coordenadas de cada posicion del array
-Z,Y,X= np.indices(volumen.shape) #me devuelve 3 arraays
-x=X.flatten() # para cada uno de estos arrays, hago un flatten para ""aplastarlo"
+ # para cada uno de estos arrays, hago un flatten para ""aplastarlo"
 #y paso de tener los indices de mi array,a tener un vector lineal ordenado,
 #esscomo que lo baja a una dimension, un vector, una lista
 # ssi tengo ([[123],[456]]), lo convierte en [123456]
-y=Y.flatten()
-z=Z.flatten()
+
+Z, Y, X = np.indices(volumen.shape)
+factor = 30  # plo puedo cambiar
+x = X.flatten()[::factor]
+y = Y.flatten()[::factor]
+z = Z.flatten()[::factor]
+c = volumen.flatten()[::factor]
 #flatten lo que hace es convertir la matriz en un vector,lo aplasta
 #osea si tengo una matriz de 200x200, me queda un vector de 40000
 #osea todas las coordenadas de los puntos en 3d
@@ -90,8 +95,6 @@ z=Z.flatten()
 #donde cada (x[i], y[i], z[i]) es un voxel en el espacio.
 
 
-C = volumen.flatten() #me aplasta el valor del volumen
-
 # puedo usar un ax.scatter(x.flatten(), y.flatten(), z.flatten())
 # donde cada (x[i], y[i], z[i]) es un voxel en el espacio.
 # scatter es para graficar puntos
@@ -105,17 +108,40 @@ C = volumen.flatten() #me aplasta el valor del volumen
 # ahora con mi array 3d, hago mi figura 3d
 #con pltfigure creo mi ""hoja""
 #el subplot es como mi cuadro de dibujo
-fig =  plt.figure(figsize=(10, 8)) # 10 x 8 pulgadas 
-ax=fig.add_subplot(111, projection='3d')
-# 111 significa 1 fila, 1 columna, 1er subplot
-# projection='3d' es para que sea 3d      
-# el scatter me dibuja losp puntos, pone puntos en las coordenada que les digo, como q me içubica losp untos
-ax.scatter (x, y, z, cmap="gray", marker=".")          # dibuja los puntos
-ax.set_xlabel("Eje X")       # etiqueta del eje X
-ax.set_ylabel("Eje Y")       # etiqueta del eje Y
-ax.set_zlabel("Eje Z")       # etiqueta del eje Z
-ax.set_title("Reconstrucción 3D")  # título del gráfico
+ 
 
-plt.show()
-fig = px.imshow(img[0], color_continuous_scale="gray")
-fig.show() 
+c = np.asarray(c, dtype=float)
+cmin, cmax = c.min(), c.max()
+c = np.zeros_like(c) if cmax == cmin else (c - cmin) / (cmax - cmin)
+
+# Reconstrucción 3D interactiva con Plotly
+fig3d = go.Figure(data=[
+    go.Scatter3d(
+        x=x, y=y, z=z,
+        mode='markers',
+        marker=dict(
+            size=2,
+            color=c,
+            colorscale='gray',
+            opacity=0.1,
+            colorbar=dict(title='Intensidad')
+        )
+    )
+])
+
+fig3d.update_layout(
+    scene=dict(
+        xaxis_title='X',
+        yaxis_title='Y',
+        zaxis_title='Z',
+        aspectmode="cube"
+    ),
+    title="Reconstrucción 3D interactiva"
+)
+
+fig3d.show()
+
+# Mostrar un slice 2D como referencia
+fig2d = px.imshow(volumen[0, :, :], color_continuous_scale="gray")
+fig2d.update_xaxes(showticklabels=False).update_yaxes(showticklabels=False)
+fig2d.show()
