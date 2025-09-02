@@ -20,12 +20,11 @@ ruta_imagenes="/Users/user/Desktop/sistemitas/python/labo/mondea3d/"
 
 #busco todos los png en la carpta y los ordeno
 #igual ya son todos png
-archivos = [os.path.join(ruta_imagenes, f) 
+archivos = [os.path.join(ruta_imagenes, f)  #me construye la ruta de las img, me las pega con ruta imganes a la ruta de la fot
             for f in os.listdir(ruta_imagenes) #lista de los elementos de la carpeta
             if f.lower().endswith((".tif", ".png", ".jpg"))] #filtra solo png tif y jpg
-# os.path.join("mondea3d/", "*.png") en esa carpeta busca todo lo que termine en .png
-#el glob me busca archivos q coincidan con el patron q le dpoy y el ospathjoin me construye rutas de una carpeta
-# lo podria sacar tmb, pero es como q me evita problemas con ios y windows
+#mi lista archivos tiene las rutas completas de las imagenes
+
 
 #%%
 #printeo la cantidad y el primero para probar
@@ -98,18 +97,15 @@ C = volumen.flatten() #me aplasta el valor del volumen
 # scatter es para graficar puntos
 # uso un factor para usar solo algunos voxeles y no todos para q no se cuelgue
 
-factor=132
-x=x[::factor ]
-y=y[::factor ]
-z=z[::factor ]
-C=C[::factor ]  
+
+
 # me quedaria : [0,1,2,3,4,5,6,7,8,9][::3] → [0,3,6,9]
 #esto lo saco cuando use muchas imagenes 
 
 # ahora con mi array 3d, hago mi figura 3d
 #con pltfigure creo mi ""hoja""
 #el subplot es como mi cuadro de dibujo
-fig = plt.figure(figsize=(10, 8)) # 10 x 8 pulgadas 
+fig =  plt.figure(figsize=(10, 8)) # 10 x 8 pulgadas 
 ax=fig.add_subplot(111, projection='3d')
 # 111 significa 1 fila, 1 columna, 1er subplot
 # projection='3d' es para que sea 3d      
