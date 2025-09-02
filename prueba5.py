@@ -8,29 +8,29 @@ import numpy as np
 import glob
 import os
 #para buscar archivos en carpetas
-
+import plotly.express as px 
 # Para gráficos
 import matplotlib.pyplot as plt  
 from mpl_toolkits.mplot3d import Axes3D  # para gráficos 3D
 
 # carpeta donde estan las fots
 
-ruta_imagenes="C:/Users/agmendez/prueba2/moneda3d"
-print(os.listdir(ruta_imagenes))
+ruta_imagenes="/Users/user/Desktop/sistemitas/python/labo/mondea3d/"
+#print(os.listdir(ruta_imagenes))
 
 #busco todos los png en la carpta y los ordeno
 #igual ya son todos png
 archivos = [os.path.join(ruta_imagenes, f) 
-            for f in os.listdir(ruta_imagenes) 
-            if f.lower().endswith((".tif", ".png", ".jpg"))]
+            for f in os.listdir(ruta_imagenes) #lista de los elementos de la carpeta
+            if f.lower().endswith((".tif", ".png", ".jpg"))] #filtra solo png tif y jpg
 # os.path.join("mondea3d/", "*.png") en esa carpeta busca todo lo que termine en .png
 #el glob me busca archivos q coincidan con el patron q le dpoy y el ospathjoin me construye rutas de una carpeta
 # lo podria sacar tmb, pero es como q me evita problemas con ios y windows
 
 #%%
 #printeo la cantidad y el primero para probar
-print("Cantidad de imágenes encontradas:", len(archivos))
-print("Primer archivo:", archivos[0] if archivos else "Ninguno")
+#print("Cantidad de imágenes encontradas:", len(archivos))
+#print("Primer archivo:", archivos[0] if archivos else "Ninguno")
 
 # ahora que encontre las imagenes, las voy a leer y guardar en una lista
 imagenes=[]
@@ -43,8 +43,8 @@ for archivo in archivos:
         print(f"No se pudo leer {archivo}: {e}")
 #printeo para ver que onda
 #eso lo puedo sacar despues
-    print(f"Imagen {archivo} leída con forma {img.shape} y tipo {img.dtype}")
-    print (imagenes)
+    #print(f"Imagen {archivo} leída con forma {img.shape} y tipo {img.dtype}")
+   # print (imagenes)
   #imagenes es una lista de matrices 
   #Cada matriz es una “rebanada” del volumen.
 #%%
@@ -98,7 +98,7 @@ C = volumen.flatten() #me aplasta el valor del volumen
 # scatter es para graficar puntos
 # uso un factor para usar solo algunos voxeles y no todos para q no se cuelgue
 
-factor=32
+factor=132
 x=x[::factor ]
 y=y[::factor ]
 z=z[::factor ]
@@ -114,10 +114,12 @@ ax=fig.add_subplot(111, projection='3d')
 # 111 significa 1 fila, 1 columna, 1er subplot
 # projection='3d' es para que sea 3d      
 # el scatter me dibuja losp puntos, pone puntos en las coordenada que les digo, como q me içubica losp untos
-ax.scatter(X, Y, Z)          # dibuja los puntos
+ax.scatter (x, y, z, cmap="gray", marker=".")          # dibuja los puntos
 ax.set_xlabel("Eje X")       # etiqueta del eje X
 ax.set_ylabel("Eje Y")       # etiqueta del eje Y
 ax.set_zlabel("Eje Z")       # etiqueta del eje Z
 ax.set_title("Reconstrucción 3D")  # título del gráfico
 
-plt.show
+plt.show()
+fig = px.imshow(img[0], color_continuous_scale="gray")
+fig.show() 
