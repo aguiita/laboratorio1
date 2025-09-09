@@ -52,13 +52,13 @@ fig = go.Figure(data=[scatter])
 
 # --- Slider interactivo ---
 steps = []
-for p in range(10, 100, 10):  # percentiles 10,20,...90
+for p in range(1, 100):  # percentiles 10,20,...90
     x, y, z, C = filtrar(p)
     step = dict(
         method="update",
         args=[{"x": [x], "y": [y], "z": [z],
                "marker": [dict(size=1, color=C, colorscale="Gray", opacity=1)]}],
-        label=f"{p}°"
+        label=f"{p}%"
     )
     steps.append(step)
 
